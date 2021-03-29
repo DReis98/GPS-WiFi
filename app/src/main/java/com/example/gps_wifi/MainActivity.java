@@ -104,42 +104,6 @@ public class MainActivity extends AppCompatActivity {
         btGPS.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                /*counterGPS++;
-                String msg = "Clicked in GPS button " + counterGPS;
-                msg +=  (counterGPS == 1) ? (" time!") : (" times!");
-
-                locationTrack = new LocationTrack(MainActivity.this);
-
-                if (locationTrack.canGetLocation()) {
-
-                    double longitude = locationTrack.getLongitude();
-                    double latitude = locationTrack.getLatitude();
-
-                    String lat = latitude < 0 ? "S " : "N ";
-                    String lon = longitude < 0 ? "W " : "E ";
-
-                    latitude = Math.abs(latitude);
-                    longitude = Math.abs(longitude);
-                    int lon_grau = (int) Math.floor(longitude);
-                    int lat_grau = (int) Math.floor(latitude);
-
-                    double aux_lon = (longitude - (double) lon_grau) * 60;
-                    double aux_lat = (latitude - (double) lat_grau) * 60;
-                    int lon_min = (int) Math.floor(aux_lon);
-                    int lat_min = (int) Math.floor(aux_lat);
-
-                    int lon_dec = (int) Math.floor((aux_lon - lon_min)*10000);
-                    int lat_dec = (int) Math.floor((aux_lat - lat_min)*10000);
-
-                    Toast.makeText(getApplicationContext(), msg + " - inside", Toast.LENGTH_SHORT).show();
-                    String toSend = "Longitude: " + lon + lon_grau + "º " + lon_min + "." + lon_dec + "'\nLatitude: " + lat + lat_grau + "º " + lat_min + "." + lat_dec + "'";
-                    sh.addItemToSend("GPS - " + toSend);
-                    txtGPS.setText(toSend);
-                } else {
-                    locationTrack.showSettingsAlert();
-                }
-                Toast.makeText(getApplicationContext(), msg, Toast.LENGTH_SHORT).show();*/
-
                 GPS();
             }
         });
@@ -148,29 +112,6 @@ public class MainActivity extends AppCompatActivity {
         btWiFi.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                /*counterWiFi++;
-
-                String ssid = "";
-                connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-
-                // check if is connected to wifi
-                if(connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI).getState() == NetworkInfo.State.CONNECTED) {
-                    wifiManager = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
-
-                    wifiInfo = wifiManager.getConnectionInfo();
-
-                    if (wifiInfo.getSupplicantState() == SupplicantState.COMPLETED) {
-                        ssid = "" + counterWiFi + " - " + wifiInfo.getSSID();
-                    }
-                }
-                else {
-
-                    ssid = "" + counterWiFi + " - Not Connected to Wifi";
-                }
-
-                sh.addItemToSend("WiFi - " + ssid);
-                txtWiFi.setText(ssid);*/
-
                 WiFi();
             }
         });
@@ -190,7 +131,7 @@ public class MainActivity extends AppCompatActivity {
                 });
             }
         };
-        timer.schedule(timerTask, 0L, 2000L);
+        timer.schedule(timerTask, 0L, 15000L);
     }
 
     @Override
