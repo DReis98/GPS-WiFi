@@ -137,6 +137,8 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
+
+        // CANCEL TIMER WHEN APP IS DOWN
         timer.cancel();
         timer.purge();
     }
