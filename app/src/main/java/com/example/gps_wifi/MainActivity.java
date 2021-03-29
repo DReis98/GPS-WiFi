@@ -47,6 +47,8 @@ public class MainActivity extends AppCompatActivity {
     int counterGPS = 0;
     int counterWiFi = 0;
 
+    String username;
+
     /* DECLARATION OF WIFI VARIABLES */
     WifiManager wifiManager;
     WifiInfo wifiInfo;
@@ -70,6 +72,15 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        Bundle bundle = getIntent().getExtras();
+
+        if(bundle != null) {
+            username = "" + bundle.get("username");
+        }
+        else {
+            onDestroy();
+        }
 
         /* FIND IDS */
         btGPS = (Button) findViewById(R.id.btGPS);
@@ -157,8 +168,8 @@ public class MainActivity extends AppCompatActivity {
             wifiInfo = wifiManager.getConnectionInfo();
 
             if (wifiInfo.getSupplicantState() == SupplicantState.COMPLETED) {
-                ssid = "" + counterWiFi + " - " + wifiInfo.getSSID();
-                sh.addItemToSend("WiFi - " + ssid);
+                ssid = "WiFi - " + username + " - " + counterWiFi + " - " + wifiInfo.getSSID();
+                sh.addItemToSend(ssid);
             }
         }
         else {
@@ -200,7 +211,8 @@ public class MainActivity extends AppCompatActivity {
                 int lat_dec = (int) Math.floor((aux_lat - lat_min)*10000);
 
                 String toSend = "Longitude: " + lon + lon_grau + "º " + lon_min + "." + lon_dec + "'\nLatitude: " + lat + lat_grau + "º " + lat_min + "." + lat_dec + "'";
-                sh.addItemToSend("GPS - " + toSend);
+                toSend = "GPS - " + username + " - " + counterGPS + " - Lat - " + latitude + " - Lon - " + longitude;
+                sh.addItemToSend(toSend);
                 txtGPS.setText(toSend);
             }
             else{

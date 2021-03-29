@@ -16,7 +16,9 @@
         android:roundIcon="@mipmap/ic_me_cute_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.AppCompat.Light.NoActionBar">
-        <activity android:name=".MainActivity">
+        <activity android:name=".MainActivity"> </activity>
+        <activity android:name=".FirstActivity">
+
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
