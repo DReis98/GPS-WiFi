@@ -116,8 +116,8 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        /* SET TIMER */
         handler = new Handler();
-
         timer = new Timer();
         timerTask =  new TimerTask() {
             @Override
@@ -143,6 +143,7 @@ public class MainActivity extends AppCompatActivity {
         timer.purge();
     }
 
+    // FUNCTION THAT SEARCHES FOR WIFI CONNECTION - SSID
     public void WiFi() {
         counterWiFi++;
 
@@ -157,6 +158,7 @@ public class MainActivity extends AppCompatActivity {
 
             if (wifiInfo.getSupplicantState() == SupplicantState.COMPLETED) {
                 ssid = "" + counterWiFi + " - " + wifiInfo.getSSID();
+                sh.addItemToSend("WiFi - " + ssid);
             }
         }
         else {
@@ -164,10 +166,10 @@ public class MainActivity extends AppCompatActivity {
             ssid = "" + counterWiFi + " - Not Connected to Wifi";
         }
 
-        sh.addItemToSend("WiFi - " + ssid);
         txtWiFi.setText(ssid);
     }
 
+    // FUNCTION THAT LOOKS FOR GPS COORDINATES
     public void GPS() {
         counterGPS++;
         String msg = "Clicked in GPS button " + counterGPS;
@@ -180,32 +182,37 @@ public class MainActivity extends AppCompatActivity {
             double longitude = locationTrack.getLongitude();
             double latitude = locationTrack.getLatitude();
 
-            String lat = latitude < 0 ? "S " : "N ";
-            String lon = longitude < 0 ? "W " : "E ";
+            if(longitude != 0.0 && latitude != 0.0) {
+                String lat = latitude < 0 ? "S " : "N ";
+                String lon = longitude < 0 ? "W " : "E ";
 
-            latitude = Math.abs(latitude);
-            longitude = Math.abs(longitude);
-            int lon_grau = (int) Math.floor(longitude);
-            int lat_grau = (int) Math.floor(latitude);
+                latitude = Math.abs(latitude);
+                longitude = Math.abs(longitude);
+                int lon_grau = (int) Math.floor(longitude);
+                int lat_grau = (int) Math.floor(latitude);
 
-            double aux_lon = (longitude - (double) lon_grau) * 60;
-            double aux_lat = (latitude - (double) lat_grau) * 60;
-            int lon_min = (int) Math.floor(aux_lon);
-            int lat_min = (int) Math.floor(aux_lat);
+                double aux_lon = (longitude - (double) lon_grau) * 60;
+                double aux_lat = (latitude - (double) lat_grau) * 60;
+                int lon_min = (int) Math.floor(aux_lon);
+                int lat_min = (int) Math.floor(aux_lat);
 
-            int lon_dec = (int) Math.floor((aux_lon - lon_min)*10000);
-            int lat_dec = (int) Math.floor((aux_lat - lat_min)*10000);
+                int lon_dec = (int) Math.floor((aux_lon - lon_min)*10000);
+                int lat_dec = (int) Math.floor((aux_lat - lat_min)*10000);
 
-            Toast.makeText(getApplicationContext(), msg + " - inside", Toast.LENGTH_SHORT).show();
-            String toSend = "Longitude: " + lon + lon_grau + "º " + lon_min + "." + lon_dec + "'\nLatitude: " + lat + lat_grau + "º " + lat_min + "." + lat_dec + "'";
-            sh.addItemToSend("GPS - " + toSend);
-            txtGPS.setText(toSend);
+                String toSend = "Longitude: " + lon + lon_grau + "º " + lon_min + "." + lon_dec + "'\nLatitude: " + lat + lat_grau + "º " + lat_min + "." + lat_dec + "'";
+                sh.addItemToSend("GPS - " + toSend);
+                txtGPS.setText(toSend);
+            }
+            else{
+                sh.addItemToSend("GPS - empty coordinates");
+                txtGPS.setText("GPS - empty coordinates");
+            }
         } else {
             locationTrack.showSettingsAlert();
         }
-        Toast.makeText(getApplicationContext(), msg, Toast.LENGTH_SHORT).show();
     }
 
+    // OTHER FUNCTIONS
     private ArrayList<String> findUnAskedPermissions(ArrayList<String> wanted) {
         ArrayList<String> result = new ArrayList<String>();
 
