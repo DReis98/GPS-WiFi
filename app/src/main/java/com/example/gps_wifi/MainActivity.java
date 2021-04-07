@@ -59,9 +59,12 @@ public class MainActivity extends AppCompatActivity {
 
     /* DECLARATION OF SOCKET VARIABLES */
     String ip = "188.82.90.18";
-    int port = 3000;
-    Thread thread;
-    SocketHandler sh;
+    int port_gps = 3000;
+    int port_wifi = 3001;
+    Thread thread_gps;
+    Thread thread_wifi;
+    SocketHandler sh_gps;
+    SocketHandler sh_wifi;
 
     /* TIMER STUFF*/
     TimerTask timerTask;
@@ -107,9 +110,12 @@ public class MainActivity extends AppCompatActivity {
         }
 
         /* INITIALIZES SOCKET AND THREAD STUFF */
-        sh = new SocketHandler(ip, port);
-        thread = new Thread(sh);
-        thread.start();
+        sh_gps = new SocketHandler(ip, port_gps);
+        sh_wifi = new SocketHandler(ip, port_wifi);
+        thread_gps = new Thread(sh_gps);
+        thread_wifi = new Thread(sh_wifi);
+        thread_gps.start();
+        thread_wifi.start();
 
         /* SET FUNCTIONS TO BUTTONS */
         btGPS.setOnClickListener(new View.OnClickListener() {
@@ -169,7 +175,7 @@ public class MainActivity extends AppCompatActivity {
 
             if (wifiInfo.getSupplicantState() == SupplicantState.COMPLETED) {
                 ssid = "WiFi - " + username + " - " + counterWiFi + " - " + wifiInfo.getSSID();
-                sh.addItemToSend(ssid);
+                sh_wifi.addItemToSend(ssid);
             }
         }
         else {
@@ -212,11 +218,11 @@ public class MainActivity extends AppCompatActivity {
 
                 String toSend = "Longitude: " + lon + lon_grau + "º " + lon_min + "." + lon_dec + "'\nLatitude: " + lat + lat_grau + "º " + lat_min + "." + lat_dec + "'";
                 toSend = "GPS - " + username + " - " + counterGPS + " - Lat - " + latitude + " - Lon - " + longitude;
-                sh.addItemToSend(toSend);
+                sh_gps.addItemToSend(toSend);
                 txtGPS.setText(toSend);
             }
             else{
-                sh.addItemToSend("GPS - empty coordinates");
+                sh_gps.addItemToSend("GPS - empty coordinates");
                 txtGPS.setText("GPS - empty coordinates");
             }
         } else {
