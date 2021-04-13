@@ -186,16 +186,13 @@ public class MainActivity extends AppCompatActivity {
             wifiInfo = wifiManager.getConnectionInfo();
 
             if (wifiInfo.getSupplicantState() == SupplicantState.COMPLETED) {
-                ssid = "WiFi - " + username + " - " + dateString + " - " + wifiInfo.getSSID();
+                ssid = "" + username + " " + dateString + " " + wifiInfo.getSSID();
                 sh_wifi.addItemToSend(ssid);
+                txtWiFi.setText(ssid);
             }
         }
-        else {
 
-            ssid = "" + counterWiFi + " - Not Connected to Wifi";
-        }
 
-        txtWiFi.setText(ssid);
     }
 
     // FUNCTION THAT LOOKS FOR GPS COORDINATES
@@ -228,13 +225,11 @@ public class MainActivity extends AppCompatActivity {
                 int lon_dec = (int) Math.floor((aux_lon - lon_min)*10000);
                 int lat_dec = (int) Math.floor((aux_lat - lat_min)*10000);
 
-                String toSend = "Longitude: " + lon + lon_grau + "º " + lon_min + "." + lon_dec + "'\nLatitude: " + lat + lat_grau + "º " + lat_min + "." + lat_dec + "'";
-                toSend = "GPS - " + username + " - " + dateString + " - Lat: " + latitude + " - Lon: " + longitude;
+                String toSend = "" + username + " " + dateString + " " + latitude + " " + longitude;
                 sh_gps.addItemToSend(toSend);
                 txtGPS.setText(toSend);
             }
             else{
-                sh_gps.addItemToSend("GPS - empty coordinates");
                 txtGPS.setText("GPS - empty coordinates");
             }
         } else {
