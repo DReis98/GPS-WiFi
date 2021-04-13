@@ -18,7 +18,9 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -70,6 +72,11 @@ public class MainActivity extends AppCompatActivity {
     TimerTask timerTask;
     Timer timer;
     Handler handler;
+
+    /* DATE AND TIME*/
+    Date date;
+    SimpleDateFormat sdf;
+    String dateString;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -133,6 +140,9 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        /* SIMPLE DATE FORMAT INITIALIZER */
+        sdf = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
+
         /* SET TIMER */
         handler = new Handler();
         timer = new Timer();
@@ -142,6 +152,8 @@ public class MainActivity extends AppCompatActivity {
                 handler.post(new Runnable() {
                     @Override
                     public void run() {
+                        date = new Date();
+                        dateString = sdf.format(date);
                         GPS();
                         WiFi();
                     }
@@ -174,7 +186,7 @@ public class MainActivity extends AppCompatActivity {
             wifiInfo = wifiManager.getConnectionInfo();
 
             if (wifiInfo.getSupplicantState() == SupplicantState.COMPLETED) {
-                ssid = "WiFi - " + username + " - " + counterWiFi + " - " + wifiInfo.getSSID();
+                ssid = "WiFi - " + username + " - " + dateString + " - " + wifiInfo.getSSID();
                 sh_wifi.addItemToSend(ssid);
             }
         }
@@ -203,8 +215,8 @@ public class MainActivity extends AppCompatActivity {
                 String lat = latitude < 0 ? "S " : "N ";
                 String lon = longitude < 0 ? "W " : "E ";
 
-                latitude = Math.abs(latitude);
-                longitude = Math.abs(longitude);
+                //latitude = Math.abs(latitude);
+                //longitude = Math.abs(longitude);
                 int lon_grau = (int) Math.floor(longitude);
                 int lat_grau = (int) Math.floor(latitude);
 
@@ -217,7 +229,7 @@ public class MainActivity extends AppCompatActivity {
                 int lat_dec = (int) Math.floor((aux_lat - lat_min)*10000);
 
                 String toSend = "Longitude: " + lon + lon_grau + "º " + lon_min + "." + lon_dec + "'\nLatitude: " + lat + lat_grau + "º " + lat_min + "." + lat_dec + "'";
-                toSend = "GPS - " + username + " - " + counterGPS + " - Lat - " + latitude + " - Lon - " + longitude;
+                toSend = "GPS - " + username + " - " + dateString + " - Lat: " + latitude + " - Lon: " + longitude;
                 sh_gps.addItemToSend(toSend);
                 txtGPS.setText(toSend);
             }
