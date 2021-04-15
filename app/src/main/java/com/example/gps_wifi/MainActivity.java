@@ -18,6 +18,7 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -50,6 +51,7 @@ public class MainActivity extends AppCompatActivity {
     int counterWiFi = 0;
 
     String username;
+    String password;
 
     /* DECLARATION OF WIFI VARIABLES */
     WifiManager wifiManager;
@@ -61,12 +63,9 @@ public class MainActivity extends AppCompatActivity {
 
     /* DECLARATION OF SOCKET VARIABLES */
     String ip = "188.82.90.18";
-    int port_gps = 3000;
-    int port_wifi = 3001;
-    Thread thread_gps;
-    Thread thread_wifi;
-    SocketHandler sh_gps;
-    SocketHandler sh_wifi;
+    int port = 3000;
+    Thread thread;
+    SocketHandler sh;
 
     /* TIMER STUFF*/
     TimerTask timerTask;
@@ -78,6 +77,7 @@ public class MainActivity extends AppCompatActivity {
     SimpleDateFormat sdf;
     String dateString;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -87,6 +87,7 @@ public class MainActivity extends AppCompatActivity {
 
         if(bundle != null) {
             username = "" + bundle.get("username");
+            password = "" + bundle.get("password");
         }
         else {
             onDestroy();
@@ -116,13 +117,11 @@ public class MainActivity extends AppCompatActivity {
                 requestPermissions(permissionsToRequest.toArray(new String[permissionsToRequest.size()]), ALL_PERMISSIONS_RESULT);
         }
 
+
         /* INITIALIZES SOCKET AND THREAD STUFF */
-        sh_gps = new SocketHandler(ip, port_gps);
-        sh_wifi = new SocketHandler(ip, port_wifi);
-        thread_gps = new Thread(sh_gps);
-        thread_wifi = new Thread(sh_wifi);
-        thread_gps.start();
-        thread_wifi.start();
+        sh = new SocketHandler(ip, port);
+        thread = new Thread(sh);
+        thread.start();
 
         /* SET FUNCTIONS TO BUTTONS */
         btGPS.setOnClickListener(new View.OnClickListener() {
@@ -186,8 +185,8 @@ public class MainActivity extends AppCompatActivity {
             wifiInfo = wifiManager.getConnectionInfo();
 
             if (wifiInfo.getSupplicantState() == SupplicantState.COMPLETED) {
-                ssid = "" + username + " " + dateString + " " + wifiInfo.getSSID();
-                sh_wifi.addItemToSend(ssid);
+                ssid = "WiFi " + username + " " + dateString + " " + wifiInfo.getSSID();
+                sh.addItemToSend(ssid);
                 txtWiFi.setText(ssid);
             }
         }
@@ -225,8 +224,8 @@ public class MainActivity extends AppCompatActivity {
                 int lon_dec = (int) Math.floor((aux_lon - lon_min)*10000);
                 int lat_dec = (int) Math.floor((aux_lat - lat_min)*10000);
 
-                String toSend = "" + username + " " + dateString + " " + latitude + " " + longitude;
-                sh_gps.addItemToSend(toSend);
+                String toSend = "GPS " + username + " " + dateString + " " + latitude + " " + longitude;
+                sh.addItemToSend(toSend);
                 txtGPS.setText(toSend);
             }
             else{
