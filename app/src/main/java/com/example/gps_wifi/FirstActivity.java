@@ -69,14 +69,22 @@ public class FirstActivity extends AppCompatActivity {
 
                 String msgToSend = "" + user + " " + pass;
 
-                if(!user.equals("") || !pass.equals("")){
+                if(!(user.equals("") || pass.equals(""))){
                     Intent intent = new Intent(FirstActivity.this, MainActivity.class);;
                     intent.putExtra("username", user);
                     intent.putExtra("password", pass);
                     startActivity(intent);
                 }
                 else {
-                    Toast.makeText(getApplicationContext(), "Enter a user", Toast.LENGTH_LONG).show();
+                    if(user.equals("") && pass.equals("")){
+                        Toast.makeText(getApplicationContext(), "Enter username and password", Toast.LENGTH_LONG).show();
+                    }
+                    else if (user.equals("")) {
+                        Toast.makeText(getApplicationContext(), "Enter username", Toast.LENGTH_LONG).show();
+                    }
+                    else {
+                        Toast.makeText(getApplicationContext(), "Enter password", Toast.LENGTH_LONG).show();
+                    }
                 }
             }
         });
