@@ -2,6 +2,7 @@ package com.example.gps_wifi;
 
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
@@ -23,15 +24,23 @@ import static android.Manifest.permission.CHANGE_WIFI_STATE;
 
 public class FirstActivity extends AppCompatActivity {
 
+    /* PERMISSIONS STUFF */
     private ArrayList<String> permissionsToRequest;
     private ArrayList<String> permissionsRejected = new ArrayList<String>();
     private ArrayList<String> permissions = new ArrayList<String>();
 
     private final static int ALL_PERMISSIONS_RESULT = 101;
 
+    /* LAYOUT COMPONENTS */
     Button bt;
     TextInputEditText inputText;
     TextInputEditText passText;
+
+    /* COMMUNICATION */
+    Thread thread;
+    SocketHandlerSR shSR;
+    String ip = "188.82.90.18";
+    int port = 3001;
 
     @Override
     protected void onCreate(Bundle savedInstaceState) {
@@ -60,20 +69,55 @@ public class FirstActivity extends AppCompatActivity {
                 requestPermissions(permissionsToRequest.toArray(new String[permissionsToRequest.size()]), ALL_PERMISSIONS_RESULT);
         }
 
-
+        /* BUTTON FUNCTION */
         bt.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 String user = "" + inputText.getText();
                 String pass = "" + passText.getText();
 
-                String msgToSend = "" + user + " " + pass;
+
 
                 if(!(user.equals("") || pass.equals(""))){
-                    Intent intent = new Intent(FirstActivity.this, MainActivity.class);;
-                    intent.putExtra("username", user);
-                    intent.putExtra("password", pass);
-                    startActivity(intent);
+
+                    // Sends message to server. In the message is included the username and password. Server validates if it enters in the app or not
+                    String msgToSend = "" + user + " " + pass;
+                    String msgToRecv = "";
+
+                    shSR = new SocketHandlerSR(ip, port);
+                    thread = new Thread(shSR);
+                    thread.start();
+                    shSR.addItemToSend(msgToSend);
+
+                    while (msgToRecv == "") {
+                        msgToRecv = shSR.receiveData();
+                    }
+                    Toast.makeText(getApplicationContext(), msgToRecv, Toast.LENGTH_LONG).show();
+
+                    if (msgToRecv.equals("ok")) {
+                        Toast.makeText(getApplicationContext(), "User ok", Toast.LENGTH_LONG).show();
+                        Intent intent = new Intent(FirstActivity.this, MainActivity.class);
+                        intent.putExtra("username", user);
+                        intent.putExtra("password", pass);
+                        startActivity(intent);
+                    }
+                    else if (msgToRecv.equals("pass")) {
+                        Toast.makeText(getApplicationContext(), "Wrong password", Toast.LENGTH_LONG).show();
+                    }
+                    else if (msgToRecv.equals("created")){
+                        Toast.makeText(getApplicationContext(), "New user", Toast.LENGTH_LONG).show();
+                        Intent intent = new Intent(FirstActivity.this, MainActivity.class);
+                        intent.putExtra("username", user);
+                        intent.putExtra("password", pass);
+                        startActivity(intent);
+                    }
+                    else if (msgToRecv.equals("error")) {
+                        Toast.makeText(getApplicationContext(), "Some error has occurred", Toast.LENGTH_LONG).show();
+                    }
+                    else {
+                        Toast.makeText(getApplicationContext(), "abcd", Toast.LENGTH_LONG).show();
+                    }
+
                 }
                 else {
                     if(user.equals("") && pass.equals("")){
@@ -114,4 +158,6 @@ public class FirstActivity extends AppCompatActivity {
     private boolean canMakeSmores() {
         return (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP_MR1);
     }
+
 }
+
