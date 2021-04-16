@@ -3,42 +3,24 @@ package com.example.gps_wifi;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Context;
-import android.content.pm.PackageManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.wifi.SupplicantState;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import java.io.IOException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import static android.Manifest.permission.ACCESS_COARSE_LOCATION;
-import static android.Manifest.permission.ACCESS_FINE_LOCATION;
-import static android.Manifest.permission.ACCESS_WIFI_STATE;
-import static android.Manifest.permission.INTERNET;
-import static android.Manifest.permission.ACCESS_NETWORK_STATE;
-import static android.Manifest.permission.CHANGE_WIFI_STATE;
 
 public class MainActivity extends AppCompatActivity {
-
-    private ArrayList<String> permissionsToRequest;
-    private ArrayList<String> permissionsRejected = new ArrayList<String>();
-    private ArrayList<String> permissions = new ArrayList<String>();
-
-    private final static int ALL_PERMISSIONS_RESULT = 101;
 
     /* DECLARATION OF XML VARIABLES */
     Button btGPS;
@@ -98,23 +80,6 @@ public class MainActivity extends AppCompatActivity {
 
         txtGPS = (TextView) findViewById(R.id.txtGPS);
         txtWiFi = (TextView) findViewById(R.id.txtWiFi);
-
-        /* PERMISSIONS */
-        permissions.add(INTERNET);
-        permissions.add(ACCESS_WIFI_STATE);
-        permissions.add(ACCESS_NETWORK_STATE);
-        permissions.add(ACCESS_FINE_LOCATION);
-        permissions.add(ACCESS_COARSE_LOCATION);
-        permissions.add(CHANGE_WIFI_STATE);
-
-        permissionsToRequest = findUnAskedPermissions(permissions);
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-
-
-            if (permissionsToRequest.size() > 0)
-                requestPermissions(permissionsToRequest.toArray(new String[permissionsToRequest.size()]), ALL_PERMISSIONS_RESULT);
-        }
 
 
         /* INITIALIZES SOCKET AND THREAD STUFF */
@@ -235,28 +200,4 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    // OTHER FUNCTIONS
-    private ArrayList<String> findUnAskedPermissions(ArrayList<String> wanted) {
-        ArrayList<String> result = new ArrayList<String>();
-
-        for (String perm : wanted) {
-            if (!hasPermission(perm)) {
-                result.add(perm);
-            }
-        }
-
-        return result;
-    }
-
-    private boolean hasPermission(String permission) {
-        if (canMakeSmores()) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                return (checkSelfPermission(permission) == PackageManager.PERMISSION_GRANTED);
-            }
-        }
-        return true;
-    }
-    private boolean canMakeSmores() {
-        return (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP_MR1);
-    }
 }
