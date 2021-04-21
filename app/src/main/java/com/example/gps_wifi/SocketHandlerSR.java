@@ -1,11 +1,16 @@
 package com.example.gps_wifi;
 
+import android.os.Build;
+
+import androidx.annotation.RequiresApi;
+
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.SocketException;
 import java.net.UnknownHostException;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 
 public class SocketHandlerSR implements Runnable {
@@ -45,6 +50,7 @@ public class SocketHandlerSR implements Runnable {
         return rcv;
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     @Override
     public void run() {
 
@@ -71,7 +77,7 @@ public class SocketHandlerSR implements Runnable {
                     e.printStackTrace();
                 }
 
-                rcv = new String(packet_r.getData());
+                rcv = new String(packet_r.getData(), packet_r.getOffset(), packet_r.getLength());
 
                 socket.close();
                 run = false;

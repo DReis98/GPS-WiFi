@@ -5,6 +5,7 @@ import android.content.pm.PackageManager;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
@@ -92,30 +93,36 @@ public class FirstActivity extends AppCompatActivity {
                     while (msgToRecv == "") {
                         msgToRecv = shSR.receiveData();
                     }
+
+                    Log.i("rcv", msgToRecv);
                     Toast.makeText(getApplicationContext(), msgToRecv, Toast.LENGTH_LONG).show();
 
-                    if (msgToRecv.equals("ok")) {
+
+
+                    Toast.makeText(getApplicationContext(), "abcdef", Toast.LENGTH_LONG).show();
+
+                    if (msgToRecv.equals("ok") ) {
                         Toast.makeText(getApplicationContext(), "User ok", Toast.LENGTH_LONG).show();
                         Intent intent = new Intent(FirstActivity.this, MainActivity.class);
                         intent.putExtra("username", user);
                         intent.putExtra("password", pass);
                         startActivity(intent);
                     }
-                    else if (msgToRecv.equals("pass")) {
+                    else if (msgToRecv.equals("pass") ) {
                         Toast.makeText(getApplicationContext(), "Wrong password", Toast.LENGTH_LONG).show();
                     }
-                    else if (msgToRecv.equals("created")){
+                    else if (msgToRecv.equals("created") ){
                         Toast.makeText(getApplicationContext(), "New user", Toast.LENGTH_LONG).show();
                         Intent intent = new Intent(FirstActivity.this, MainActivity.class);
                         intent.putExtra("username", user);
                         intent.putExtra("password", pass);
                         startActivity(intent);
                     }
-                    else if (msgToRecv.equals("error")) {
+                    else if (msgToRecv.equals("error") ) {
                         Toast.makeText(getApplicationContext(), "Some error has occurred", Toast.LENGTH_LONG).show();
                     }
                     else {
-                        Toast.makeText(getApplicationContext(), "abcd", Toast.LENGTH_LONG).show();
+                        Toast.makeText(getApplicationContext(), "abcd 1", Toast.LENGTH_LONG).show();
                     }
 
                 }
