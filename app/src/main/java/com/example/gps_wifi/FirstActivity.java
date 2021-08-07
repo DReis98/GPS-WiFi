@@ -94,15 +94,8 @@ public class FirstActivity extends AppCompatActivity {
                         msgToRecv = shSR.receiveData();
                     }
 
-                    Log.i("rcv", msgToRecv);
-                    Toast.makeText(getApplicationContext(), msgToRecv, Toast.LENGTH_LONG).show();
-
-
-
-                    Toast.makeText(getApplicationContext(), "abcdef", Toast.LENGTH_LONG).show();
 
                     if (msgToRecv.equals("ok") ) {
-                        Toast.makeText(getApplicationContext(), "User ok", Toast.LENGTH_LONG).show();
                         Intent intent = new Intent(FirstActivity.this, MainActivity.class);
                         intent.putExtra("username", user);
                         intent.putExtra("password", pass);
@@ -119,10 +112,10 @@ public class FirstActivity extends AppCompatActivity {
                         startActivity(intent);
                     }
                     else if (msgToRecv.equals("error") ) {
-                        Toast.makeText(getApplicationContext(), "Some error has occurred", Toast.LENGTH_LONG).show();
+                        Toast.makeText(getApplicationContext(), "Some error has occurred in the server", Toast.LENGTH_LONG).show();
                     }
                     else {
-                        Toast.makeText(getApplicationContext(), "abcd 1", Toast.LENGTH_LONG).show();
+                        Toast.makeText(getApplicationContext(), "Some error has occurred", Toast.LENGTH_LONG).show();
                     }
 
                 }

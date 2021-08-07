@@ -2,20 +2,28 @@ package com.example.gps_wifi;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.net.wifi.ScanResult;
 import android.net.wifi.SupplicantState;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -59,6 +67,9 @@ public class MainActivity extends AppCompatActivity {
     SimpleDateFormat sdf;
     String dateString;
 
+    private ArrayList<String> wifiList = new ArrayList<>();
+    private List<ScanResult> results;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -99,9 +110,16 @@ public class MainActivity extends AppCompatActivity {
         btWiFi.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                WiFi();
+                WiFi2();
             }
         });
+
+        wifiManager = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
+
+        if (!wifiManager.isWifiEnabled()) {
+            Toast.makeText(this, "WiFi is disabled ... We need to enable it", Toast.LENGTH_LONG).show();
+            wifiManager.setWifiEnabled(true);
+        }
 
         /* SIMPLE DATE FORMAT INITIALIZER */
         sdf = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
@@ -118,7 +136,7 @@ public class MainActivity extends AppCompatActivity {
                         date = new Date();
                         dateString = sdf.format(date);
                         GPS();
-                        WiFi();
+                        WiFi2();
                     }
                 });
             }
@@ -158,6 +176,32 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    public void WiFi2() {
+        counterWiFi++;
+
+        wifiList.clear();
+        registerReceiver(wifiReceiver, new IntentFilter(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION));
+        wifiManager.startScan();
+    }
+
+    BroadcastReceiver wifiReceiver = new BroadcastReceiver() {
+        String ssid = "";
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            results = wifiManager.getScanResults();
+            unregisterReceiver(this);
+
+            for (ScanResult scanResult : results) {
+                wifiList.add(scanResult.SSID);
+            }
+            for (String res : wifiList) {
+                ssid = "WiFi " + username + " " + dateString + " " + res;
+                sh.addItemToSend(ssid);
+                txtWiFi.setText(ssid);
+            }
+        }
+    };
+
     // FUNCTION THAT LOOKS FOR GPS COORDINATES
     public void GPS() {
         counterGPS++;
@@ -170,6 +214,7 @@ public class MainActivity extends AppCompatActivity {
 
             double longitude = locationTrack.getLongitude();
             double latitude = locationTrack.getLatitude();
+            double altitude = locationTrack.getAltitude();
 
             if(longitude != 0.0 && latitude != 0.0) {
                 String lat = latitude < 0 ? "S " : "N ";
@@ -188,7 +233,7 @@ public class MainActivity extends AppCompatActivity {
                 int lon_dec = (int) Math.floor((aux_lon - lon_min)*10000);
                 int lat_dec = (int) Math.floor((aux_lat - lat_min)*10000);
 
-                String toSend = "GPS " + username + " " + dateString + " " + latitude + " " + longitude;
+                String toSend = "GPS " + username + " " + dateString + " " + latitude + " " + longitude + " " + altitude;
                 sh.addItemToSend(toSend);
                 txtGPS.setText(toSend);
             }
